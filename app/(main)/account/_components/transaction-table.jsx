@@ -168,7 +168,7 @@ export function TransactionTable({ transactions }) {
   } = useFetch(bulkDeleteTransactions);
 
   const handleBulkDelete = async () => {
-    console.log("Selected IDs before delete:", selectedIds); 
+    // console.log("Selected IDs before delete:", selectedIds); 
     if (
       !window.confirm(
         `Are you sure you want to delete ${selectedIds.length} transactions?`
@@ -176,7 +176,12 @@ export function TransactionTable({ transactions }) {
     )
       return;
 
-    await deleteFn(selectedIds);
+      // console.log("Deleting transactions with IDs:", selectedIds);
+      if (!Array.isArray(selectedIds) || selectedIds.length === 0) {
+        console.error("Invalid selectedIds:", selectedIds);
+        return;
+      }
+      await deleteFn(selectedIds);
   };
 
   useEffect(() => {
