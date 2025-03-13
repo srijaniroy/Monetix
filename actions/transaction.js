@@ -273,6 +273,20 @@ export async function scanReceipt(file) {
 
     try {
       const data = JSON.parse(cleanedText);
+
+      // Check if amount is valid
+      if (typeof data.amount !== 'number' || isNaN(data.amount)) {
+        console.error("Invalid amount:", data.amount);
+        throw new Error("Failed to scan receipt");
+      }
+
+      // Check if date is valid
+      const parsedDate = new Date(data.date);
+      if (isNaN(parsedDate)) {
+        console.error("Invalid date:", data.date);
+        throw new Error("Failed to scan receipt");
+      }
+
       return {
         amount: parseFloat(data.amount),
         date: new Date(data.date),
