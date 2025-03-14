@@ -49,7 +49,6 @@ export async function getAccountWithTransactions(accountId) {
 }
 
 export async function bulkDeleteTransactions(transactionIds) {
-  console.log("Starting bulk delete for IDs:", transactionIds);
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
@@ -68,8 +67,6 @@ export async function bulkDeleteTransactions(transactionIds) {
       },
     });
 
-    console.log("Transactions to delete:", transactions);
-
     // Group transactions by account to update balances
     const accountBalanceChanges = transactions.reduce((acc, transaction) => {
       const change =
@@ -80,48 +77,20 @@ export async function bulkDeleteTransactions(transactionIds) {
       return acc;
     }, {});
 
-    console.log("Account balance changes:", accountBalanceChanges);
-
     // Delete transactions and update account balances in a transaction
-    const deleteResult = await db.$transaction(async (tx) => {
-    // Delete transactions
-    const deleteResult = await tx.transaction.deleteMany({
-      where: {
-        id: { in: transactionIds },
-        userId: user.id,
-      },
-    });
+    await db.$transaction(async (tx) => {
+      // Delete transactions
+      await tx.transaction.deleteMany({
+        where: {
+          id: { in: transactionIds },
+          userId: user.id,
+        },
+      });
 
-      console.log("Delete result:", deleteResult); // <-- Log the result of delete operation
-
-  // Ensure delete operation was successful
-  if (deleteResult.count === 0) {
-    throw new Error("No transactions were deleted.");
-  }
-
-   // Check if accountBalanceChanges is valid
-   console.log("Account Balance Changes:", accountBalanceChanges); 
-   if (!accountBalanceChanges || Object.keys(accountBalanceChanges).length === 0) {
-     console.error("No account balance changes detected. Skipping balance updates.");
-     return;
-   }
-
-   console.log("Updating account balances...");
       // Update account balances
       for (const [accountId, balanceChange] of Object.entries(
         accountBalanceChanges
       )) {
-
-        if (!accountId) {
-          console.error("Invalid accountId:", accountId);
-          continue; // Skip invalid accountIds
-        }
-        if (balanceChange === undefined || balanceChange === null) {
-          console.error("Invalid balanceChange for account:", accountId);
-          continue; // Skip invalid balanceChange
-        }
-        console.log(`Updating account ${accountId} with balance change ${balanceChange}`);
-
         await tx.account.update({
           where: { id: accountId },
           data: {
@@ -133,21 +102,11 @@ export async function bulkDeleteTransactions(transactionIds) {
       }
     });
 
-    console.log("updation complete");
-    if (!accountId) {
-      console.error("accountId is not defined. Skipping revalidation.");
-      return { success: false, error: "accountId is missing." };
-    }
-    else{
-      console.log("revalidation");
-    }
-
     revalidatePath("/dashboard");
-    revalidatePath(`/account/${accountId}`);
+    revalidatePath("/account/[id]");
 
     return { success: true };
   } catch (error) {
-    console.error("Error in bulkDeleteTransactions:", error); 
     return { success: false, error: error.message };
   }
 }
