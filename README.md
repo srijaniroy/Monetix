@@ -1,7 +1,7 @@
 # Monetix  
 An **AI-powered personal finance platform** to help users **track expenses, manage budgets, and gain financial insights effortlessly**.  
 
-🚀 **Live Demo**: [Monetix Live](https://monetix-tan.vercel.app/)  
+🚀 **Live Demo**: [Monetix Live](https://monetix-live.vercel.app/)  
 
 ## ✨ Features   
 
