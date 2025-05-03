@@ -1,9 +1,9 @@
 # Monetix  
 An **AI-powered personal finance platform** to help users **track expenses, manage budgets, and gain financial insights effortlessly**.  
 
-**Live Demo**: [Monetix Live](https://monetix-tan.vercel.app/)  
+🚀 **Live Demo**: [Monetix Live](https://monetix-tan.vercel.app/)  
 
-## Features  
+## ✨ Features   
 
 - **Savings & Transactions Management** – Create and manage savings accounts with **detailed transaction tracking**.  
 - **AI-Powered Financial Insights** – Uses **Gemini AI** to generate **monthly financial reports** and spending insights.  
@@ -19,11 +19,11 @@ An **AI-powered personal finance platform** to help users **track expenses, mana
 
 ---
 
-## Installation & Setup  
+## 🛠️ Installation & Setup  
 
 ### 1. Clone the Repository  
 ```sh
-git clone https://github.com/srijaniroy/Monetix
+git clone https://github.com/srijaniroy/Monetix.git
 cd Monetix
 ```
 
@@ -61,7 +61,7 @@ The app will be available at **`http://localhost:3000`**.
 
 ---
 
-## How It Works  
+## ⚙️ How It Works  
 
 1. **User Onboarding & Authentication** – Users sign up via **Clerk authentication**.  
 2. **Expense Tracking** – Transactions are **recorded, categorized, and visualized** with filtering and sorting.  
@@ -72,7 +72,7 @@ The app will be available at **`http://localhost:3000`**.
 
 ---
 
-## Technologies Used  
+## 🧰 Technologies Used   
 
 ### Frontend  
 - **Next.js** – Optimized frontend performance with SSR  
@@ -88,7 +88,7 @@ The app will be available at **`http://localhost:3000`**.
 
 ---
 
-## Future Enhancements  
+## 🔮 Future Enhancements  
 
 - **Bank Integrations** – Sync **real-time bank transactions**.  
 - **AI-Powered Smart Budgeting** – Predictive budget adjustments based on spending patterns.  
