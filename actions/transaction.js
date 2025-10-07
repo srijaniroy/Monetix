@@ -230,12 +230,15 @@ export async function getUserTransactions(query = {}) {
 // Scan Receipt
 export async function scanReceipt(file) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    //console.log("Starting receipt scan with file type:", file.type);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Convert File to ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
     // Convert ArrayBuffer to Base64
     const base64String = Buffer.from(arrayBuffer).toString("base64");
+
+    //console.log("File converted to base64, length:", base64String.length);
 
     const prompt = `
       Analyze this receipt image and extract the following information in JSON format:
@@ -257,6 +260,7 @@ export async function scanReceipt(file) {
       If its not a recipt, return an empty object
     `;
 
+    //console.log("Calling Google AI API...");
     const result = await model.generateContent([
       {
         inlineData: {
@@ -267,8 +271,10 @@ export async function scanReceipt(file) {
       prompt,
     ]);
 
+    //console.log("API call successful, processing response...");
     const response = await result.response;
     const text = response.text();
+    //console.log("Raw response text:", text);
     const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
 
     try {
@@ -296,11 +302,22 @@ export async function scanReceipt(file) {
       };
     } catch (parseError) {
       console.error("Error parsing JSON response:", parseError);
+      //console.error("Cleaned text that failed to parse:", cleanedText);
       throw new Error("Invalid response format from Gemini");
     }
   } catch (error) {
     console.error("Error scanning receipt:", error);
-    throw new Error("Failed to scan receipt");
+    
+    // Provide more specific error messages
+    if (error.message.includes('models/gemini')) {
+      throw new Error("Gemini model not available. Please check your API key and model access.");
+    } else if (error.message.includes('404')) {
+      throw new Error("Gemini API endpoint not found. Please check the model name.");
+    } else if (error.message.includes('403')) {
+      throw new Error("Access denied to Gemini API. Please check your API key permissions.");
+    } else {
+      throw new Error(`Failed to scan receipt: ${error.message}`);
+    }
   }
 }
 
